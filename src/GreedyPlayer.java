@@ -52,8 +52,15 @@ public class GreedyPlayer implements Player{
     	arb.setMove(col);
     	calcScore();
     	
+    	for(int i = 0 ; i <= cols ; i++) {
+    		if(board.isValidMove(i)) {
+    			board.move();
+    		}
+    	}
+    	
     }
     
+ // Return the number of connect-4s that player #id has.
     public int calcScore(Connect4Board board, int id)
 	{
 		final int rows = board.numRows();
