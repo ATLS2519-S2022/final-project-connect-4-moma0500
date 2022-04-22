@@ -1,8 +1,10 @@
 
-public class GreedyPlayer implements Player{
+public class MinimaxPlayer {
+
 
 	int id;
 	int cols;
+	int opponent_id;
 	
 	/**
      * Return the name of this player.
@@ -10,7 +12,7 @@ public class GreedyPlayer implements Player{
      * @return A name for this player
      */
     String name() {
-    	return "Greedy Boi";
+    	return "Minnie";
     }
   
     /**
@@ -47,18 +49,86 @@ public class GreedyPlayer implements Player{
     		throw new Error ("Complaint: the board is full");
     	}
     	
-    	int col = 0;
-    	//find max score from all possible moves
-    	arb.setMove(col);
-    	calcScore();
     	
-    	for(int i = 0 ; i <= cols ; i++) {
-    		if(board.isValidMove(i)) {
-    			board.move();
-    		}
+    	int move = 0; //0-6 the column number
+    	int maxDepth = 1; 
+    	//while theres time remaining and search depth is <= the number of moves remaining
+    	while(!arb.isTimeUp() && maxDepth <= board.numEmptyCells()) {
+    		
+//    		bestScore = -1000;
+//    		
+//    		for (int i cols) {
+//    			board.move(i,  id);
+//    			score = minimax(board, depth, isMaximizing, arb);
+    			
+    		
+
+        	//run first level of minimax serach
+        	//set move to be the column corresponding to the best score
+    		maxDepth++;
+        	arb.setMove(move);
     	}
+
     	
     }
+    
+    
+ 
+    
+    //extra credit -> make another method that calculates a heuristic score
+    
+
+    public int minimax(Connect4Board board, int depth, boolean isMaximizing, Arbitrator arb) {
+    	
+    	int bestScore;
+    	
+    	if(depth == 0 || board.isFull() || arb.isTimeUp()) {
+    		return calcScore(board, id) - calcScore(board, opponent_id);
+    	}
+    	
+    	if(isMaximizing) {
+    		bestScore = -1000;
+    		for (int i = 0 ; i < cols ; i++) {
+    			board.move(i, id);
+    			bestScore = Math.max(bestScore, minimax(board, depth - 1, false, arb));
+    			board.unmove(i, id);
+    		}
+    	}
+    		
+    	else {
+    		bestScore = 1000;
+    		for (int i = 0 ; i < cols ; i++) {
+    			board.move(i, opponent_id);
+    			bestScore = Math.min(bestScore, minimax(board, depth - 1, true, arb));
+    			board.unmove(i, opponent_id);
+    			}
+    			
+    			return bestScore;
+    			
+    		}
+    	
+    	return bestScore;
+		
+    	}
+    	
+    //best score at that particular point 
+    	
+//   if maximizingPlayer then
+//    	bestScore := −1000 --> really small number so we're able to update
+//    	for each possible node --> go through the board and try all the diff moves you can make
+	//    	board.move(...) for your player
+	//    	bestScore := Math.max(value, minimax(board, depth − 1, FALSE)) 
+	//    	board.unmove(...)
+//    	return bestScore
+    
+   // else /* minimizing player */ 
+//    	bestScore = 1000;
+//    	for each possible move do
+	//    	board.move(...) for your opponents player
+	//    	bestScore = Math.min(bestScore, minimax(board, depth -1, TRUE, arb)
+	//    return bestScore
+    	
+    
     
 
     
@@ -113,3 +183,5 @@ public class GreedyPlayer implements Player{
     
     
 }
+
+
