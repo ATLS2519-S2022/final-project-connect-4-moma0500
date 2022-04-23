@@ -40,7 +40,7 @@ public class GreedyPlayer implements Player{
      */
     void calcMove(Connect4Board board, int oppMoveCol, Arbitrator arb) 
     
-        throws TimeUpException {
+     throws TimeUpException {
     	//make sure there is room to make a move
     	
     	if(board.isFull()) {
@@ -48,7 +48,14 @@ public class GreedyPlayer implements Player{
     	}
     	
     	int col = 0;
-    	//find max score from all possible moves
+
+    	
+//    	For each move:
+//    		Temporarily make the move using board.move()
+//    		Calculate a score based on how the board is for you now that you've made the move
+//    		Undo the move using board.unmove 
+//    		Return the move that had the highest calculated score
+    	
     	arb.setMove(col);
     	calcScore();
     	
