@@ -72,7 +72,19 @@ public class MinimaxPlayer {
     	
     }
     
+    /**
+	    nested for loops that goes through every column and row 
+	    make a function to pass array parameter into
+	    parameter = game board -- if statement 
+	    	if spot is full don't touch
+	    	if not full then look around it
+	    		see if you have any of your spots that are filled
+	    		
+	    	
+	    
     
+    
+    */
  
     
     //extra credit -> make another method that calculates a heuristic score
