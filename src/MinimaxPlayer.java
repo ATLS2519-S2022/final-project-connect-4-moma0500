@@ -52,6 +52,7 @@ public class MinimaxPlayer {
     	
     	int move = 0; //0-6 the column number
     	int maxDepth = 1; 
+
     	//while theres time remaining and search depth is <= the number of moves remaining
     	while(!arb.isTimeUp() && maxDepth <= board.numEmptyCells()) {
     		
@@ -60,13 +61,36 @@ public class MinimaxPlayer {
 //    		for (int i cols) {
 //    			board.move(i,  id);
 //    			score = minimax(board, depth, isMaximizing, arb);
+    		
+    		//iterate through 7 cols like greedy and keep track of the best score from minimax and set move to best score
+    		
+    		int bestScore = -1000;
+    		
+    		for (int i = 0 ; i < cols ; i++) {
+    			if (board.isValidMove(i)) {
+    		   
+    			board.move(i, id);
+    	    	int currentScore = minimax(board, maxDepth - 1, false, arb);
+//    			bestScore = Math.max(bestScore, minimax(board, maxDepth - 1, false, arb)); //(best score vs column score)
+    	    	
+    	    	if (currentScore > bestScore) {
+    	    		bestScore = currentScore;
+    	    		move = i;
+    	    		
+    	    	}
+    	    	
+    			board.unmove(i, id);
+    			
+    			}
+    		}
     			
     		
 
-        	//run first level of minimax serach
+        	//run first level of minimax search
         	//set move to be the column corresponding to the best score
     		maxDepth++;
         	arb.setMove(move);
+        	
     	}
 
     	
@@ -79,10 +103,6 @@ public class MinimaxPlayer {
 	    	if spot is full don't touch
 	    	if not full then look around it
 	    		see if you have any of your spots that are filled
-	    		
-	    	
-	    
-    
     
     */
  
@@ -101,18 +121,23 @@ public class MinimaxPlayer {
     	if(isMaximizing) {
     		bestScore = -1000;
     		for (int i = 0 ; i < cols ; i++) {
+    			if (board.isValidMove(i)) {
     			board.move(i, id);
     			bestScore = Math.max(bestScore, minimax(board, depth - 1, false, arb));
     			board.unmove(i, id);
+    			}
     		}
     	}
     		
     	else {
     		bestScore = 1000;
     		for (int i = 0 ; i < cols ; i++) {
+    			if (board.isValidMove(i)) {
     			board.move(i, opponent_id);
     			bestScore = Math.min(bestScore, minimax(board, depth - 1, true, arb));
     			board.unmove(i, opponent_id);
+    			
+    			}
     			}
     			
     			return bestScore;

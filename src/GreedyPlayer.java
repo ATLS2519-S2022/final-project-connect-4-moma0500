@@ -57,7 +57,7 @@ public class GreedyPlayer implements Player{
 //    		Return the move that had the highest calculated score
     	
     	arb.setMove(col);
-    	calcScore();
+    	calcScore(board, 3-id);
     	
     	for(int i = 0 ; i <= cols ; i++) {
     		if(board.isValidMove(i)) {
