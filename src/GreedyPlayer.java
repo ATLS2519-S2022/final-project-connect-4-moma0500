@@ -9,8 +9,8 @@ public class GreedyPlayer implements Player{
      * 
      * @return A name for this player
      */
-    String name() {
-    	return "Greedy Boi";
+    public String name() {
+    	return "Greedy Mike";
     }
   
     /**
@@ -22,10 +22,10 @@ public class GreedyPlayer implements Player{
      * @param rows the number of rows in the board
      * @param cols the number of columns in the board
      */
-    void init(int id, int msecPerMove, int rows, int cols) {
+    public void init(int id, int msecPerMove, int rows, int cols) {
     	
     	this.id = id; //id is your players id
-    	this.cols = cols;
+    	this.cols = cols; //column number
     }
 
     
@@ -38,7 +38,7 @@ public class GreedyPlayer implements Player{
      * @param arb handles communication between game and player
      * @throws TimeUpException If the game determines the player has run out of time
      */
-    void calcMove(Connect4Board board, int oppMoveCol, Arbitrator arb) 
+    public void calcMove(Connect4Board board, int oppMoveCol, Arbitrator arb) 
     
      throws TimeUpException {
     	//make sure there is room to make a move
@@ -47,23 +47,37 @@ public class GreedyPlayer implements Player{
     		throw new Error ("Complaint: the board is full");
     	}
     	
-    	int col = 0;
+    	int maxValue = -1000; //stores highest value
+       
+    	int [] scoreKeep = new int[7]; //array that stores temporary scores to eventually see which score is the highest
+        
+        int colHighestScore = 0;
+        
+        
+        // Find maximum score for all possible moves 
+        
+        for (int i = 0 ; i < cols ; i++) { //Runs through each column and finds the highest score if there is a possible move
 
-    	
-//    	For each move:
-//    		Temporarily make the move using board.move()
-//    		Calculate a score based on how the board is for you now that you've made the move
-//    		Undo the move using board.unmove 
-//    		Return the move that had the highest calculated score
-    	
-    	arb.setMove(col);
-    	calcScore(board, 3-id);
-    	
-    	for(int i = 0 ; i <= cols ; i++) {
-    		if(board.isValidMove(i)) {
-    			board.move();
-    		}
-    	}
+   
+        	if (board.isValidMove(i)) { //make sure move is valid
+        		
+	        	board.move(i, id); 
+	     
+	        	scoreKeep[i] = calcScore (board, id);
+	            board.unmove(i, id);
+            
+            if (scoreKeep[i] > maxValue) {
+            	
+	            maxValue = scoreKeep[i];
+	            colHighestScore = i; //storing column location in i
+            
+            }
+            
+          }
+        	
+        }
+        
+        arb.setMove(colHighestScore); 
     	
     }
     

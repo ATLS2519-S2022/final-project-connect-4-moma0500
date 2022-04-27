@@ -1,5 +1,5 @@
 
-public class MinimaxPlayer {
+public class MinimaxPlayer implements Player {
 
 
 	int id;
@@ -11,7 +11,7 @@ public class MinimaxPlayer {
      * 
      * @return A name for this player
      */
-    String name() {
+   public String name() {
     	return "Minnie";
     }
   
@@ -24,9 +24,10 @@ public class MinimaxPlayer {
      * @param rows the number of rows in the board
      * @param cols the number of columns in the board
      */
-    void init(int id, int msecPerMove, int rows, int cols) {
+    public void init(int id, int msecPerMove, int rows, int cols) {
     	
     	this.id = id; //id is your players id
+    	this.opponent_id= 3-id;
     	this.cols = cols;
     }
 
@@ -40,7 +41,7 @@ public class MinimaxPlayer {
      * @param arb handles communication between game and player
      * @throws TimeUpException If the game determines the player has run out of time
      */
-    void calcMove(Connect4Board board, int oppMoveCol, Arbitrator arb) 
+    public void calcMove(Connect4Board board, int oppMoveCol, Arbitrator arb) 
     
         throws TimeUpException {
     	//make sure there is room to make a move
@@ -52,44 +53,47 @@ public class MinimaxPlayer {
     	
     	int move = 0; //0-6 the column number
     	int maxDepth = 1; 
+    	
+    	
 
     	//while theres time remaining and search depth is <= the number of moves remaining
     	while(!arb.isTimeUp() && maxDepth <= board.numEmptyCells()) {
     		
-//    		bestScore = -1000;
-//    		
-//    		for (int i cols) {
-//    			board.move(i,  id);
-//    			score = minimax(board, depth, isMaximizing, arb);
     		
     		//iterate through 7 cols like greedy and keep track of the best score from minimax and set move to best score
     		
-    		int bestScore = -1000;
-    		
-    		for (int i = 0 ; i < cols ; i++) {
-    			if (board.isValidMove(i)) {
-    		   
-    			board.move(i, id);
-    	    	int currentScore = minimax(board, maxDepth - 1, false, arb);
-//    			bestScore = Math.max(bestScore, minimax(board, maxDepth - 1, false, arb)); //(best score vs column score)
-    	    	
-    	    	if (currentScore > bestScore) {
-    	    		bestScore = currentScore;
-    	    		move = i;
-    	    		
-    	    	}
-    	    	
-    			board.unmove(i, id);
-    			
-    			}
-    		}
-    			
-    		
+        	int bestScore = -1000; //stores highest value
+            
+        	int [] scoreKeep = new int[7]; //array that stores temporary scores to eventually see which score is the highest
+            
+            int colHighestScore = 0;
+            
+            
+            // Find maximum score for all possible moves 
+            
+            for (int i = 0 ; i < cols ; i++) { //Runs through each column and finds the highest score if there is a possible move
 
-        	//run first level of minimax search
-        	//set move to be the column corresponding to the best score
-    		maxDepth++;
-        	arb.setMove(move);
+       
+            	if (board.isValidMove(i)) { //make sure move is valid
+            		
+    	        	board.move(i, id); 
+    	     
+    	        	scoreKeep[i] = minimax(board, maxDepth - 1, false, arb);
+    	            board.unmove(i, id);
+                
+                if (scoreKeep[i] > bestScore) {
+                	
+                	bestScore = scoreKeep[i];
+    	            colHighestScore = i; //storing column location in i
+                
+                }
+                
+              }
+            	
+            }
+            
+            arb.setMove(colHighestScore); 
+            maxDepth++;
         	
     	}
 
@@ -127,6 +131,7 @@ public class MinimaxPlayer {
     			board.unmove(i, id);
     			}
     		}
+    		 return bestScore;
     	}
     		
     	else {
@@ -144,7 +149,7 @@ public class MinimaxPlayer {
     			
     		}
     	
-    	return bestScore;
+
 		
     	}
     	
