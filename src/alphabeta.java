@@ -44,6 +44,7 @@ public class alphabeta implements Player {
      */
     public void calcMove(Connect4Board board, int oppMoveCol, Arbitrator arb) 
     
+    
         throws TimeUpException {
     	//make sure there is room to make a move
     	
@@ -53,12 +54,12 @@ public class alphabeta implements Player {
     	
     	
     	int move = 0; //0-6 the column number
-    	int maxDepth = 1; 
+    	int depth = 1; 
     	
     	
 
     	//while theres time remaining and search depth is <= the number of moves remaining
-    	while(!arb.isTimeUp() && maxDepth <= board.numEmptyCells()) {
+    	while(!arb.isTimeUp() && depth <= board.numEmptyCells()) {
     		
     		
     		//iterate through 7 cols like greedy and keep track of the best score from minimax and set move to best score
@@ -79,7 +80,7 @@ public class alphabeta implements Player {
             		
     	        	board.move(i, id); 
     	     
-    	        	scoreKeep[i] = minimax(board, maxDepth - 1, false, arb);
+    	        	scoreKeep[i] = alphabeta(board, depth - 1, alpha, beta, false, arb);
     	            board.unmove(i, id);
                 
                 if (scoreKeep[i] > bestScore) {
@@ -94,14 +95,71 @@ public class alphabeta implements Player {
             }
             
             arb.setMove(colHighestScore); 
-            maxDepth++;
+            depth++;
         	
     	}
 
     	
     }
     
-    /**
+    public int alphabeta(Connect4Board board, int depth, int alpha, int beta, boolean isMaximizing, Arbitrator arb) {
+  	
+    	int bestScore; //stores highest value
+    	
+    	if(depth == 0 || board.isFull() || arb.isTimeUp()) {
+    		return calcScore(board, id) - calcScore(board, opponent_id);
+    	}
+    	
+    	if(isMaximizing) {
+    		bestScore = -1000;
+    		for (int i = 0 ; i < cols ; i++) {
+    			
+    			if (board.isValidMove(i)) {
+    			
+	    			board.move(i, id);
+	    			bestScore = Math.max(bestScore, alphabeta(board, depth - 1, alpha, beta, false, arb));
+	    			alpha = Math.max(alpha, bestScore);
+    			
+	    			if (alpha >= beta) {
+	    				break;	
+	    			}
+	    			
+	    			board.unmove(i, id);
+	    			
+    			}
+    		}
+    		
+    		 return bestScore;
+    	}
+    		
+    	else {
+    		
+    		bestScore = 1000;
+    		
+    		for (int i = 0 ; i < cols ; i++) {
+    			
+    			if (board.isValidMove(i)) {
+    				
+	    			board.move(i, opponent_id);
+	    			bestScore = Math.min(bestScore, alphabeta(board, depth - 1, alpha, beta, true, arb));
+	    			beta = Math.min(beta, bestScore);
+	    			
+	    			if (alpha >= beta) {
+	    				break;
+	    			}
+	    			
+	    			board.unmove(i, opponent_id);
+    			
+    			}
+    		}
+    			
+    			return bestScore;
+    			
+    	}
+    	
+	}
+
+	/**
 	    nested for loops that goes through every column and row 
 	    make a function to pass array parameter into
 	    parameter = game board -- if statement 
@@ -136,75 +194,8 @@ public class alphabeta implements Player {
 	//   		 	break /* α cut-off */
 	//    	return value
 
-    public int alphabeta(Connect4Board board, int depth, boolean isMaximizing, Arbitrator arb) {
-    	
-      	int bestScore; //stores highest value
-    	
-    	if(depth == 0 || board.isFull() || arb.isTimeUp()) {
-    		return calcScore(board, id) - calcScore(board, opponent_id);
-    	}
-    	
-    	if(isMaximizing) {
-    		bestScore = -1000;
-    		for (int i = 0 ; i < cols ; i++) {
-    			
-    			if (board.isValidMove(i)) {
-    			
-    			board.move(i, id);
-    			bestScore = Math.max(bestScore, alphabeta(board, depth - 1, alpha, beta, false));
-    			alpha = Math.max(alpha, bestScore);
-    			
-    			if (alpha > beta) {
-    				break;	
-    			}
-    			
-    			board.unmove(i, id);
-    			
-    			}
-    		}
-    		
-    		 return bestScore;
-    	}
-    		
-    	else {
-    		bestScore = 1000;
-    		for (int i = 0 ; i < cols ; i++) {
-    			if (board.isValidMove(i)) {
-    			board.move(i, opponent_id);
-    			bestScore = Math.min(bestScore, minimax(board, depth - 1, true, arb));
-    			board.unmove(i, opponent_id);
-    			
-    			}
-    			}
-    			
-    			return bestScore;
-    			
-    		}
-    	
 
-		
-    	}
-    	
-    //best score at that particular point 
-    	
-//   if maximizingPlayer then
-//    	bestScore := −1000 --> really small number so we're able to update
-//    	for each possible node --> go through the board and try all the diff moves you can make
-	//    	board.move(...) for your player
-	//    	bestScore := Math.max(value, minimax(board, depth − 1, FALSE)) 
-	//    	board.unmove(...)
-//    	return bestScore
     
-   // else /* minimizing player */ 
-//    	bestScore = 1000;
-//    	for each possible move do
-	//    	board.move(...) for your opponents player
-	//    	bestScore = Math.min(bestScore, minimax(board, depth -1, TRUE, arb)
-	//    return bestScore
-    	
-    
-    
-
     
  // Return the number of connect-4s that player #id has.
     public int calcScore(Connect4Board board, int id)
