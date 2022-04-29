@@ -1,4 +1,16 @@
 
+/* *****************************************************************************
+ * Title:            Greedy Player
+ * Files:            GreedyPlayer.java
+ * Semester:         Spring 2022
+ * 
+ * Author:           McClain Martensen moma0500@colorado.edu
+ *                  
+ * Description:		 A Connect-4 player that represents a greedy playing strategy.
+ * 
+ * Written:       	 4/28/2022
+ **************************************************************************** */
+
 public class GreedyPlayer implements Player{
 
 	int id;
@@ -81,9 +93,14 @@ public class GreedyPlayer implements Player{
     	
     }
     
-
+    /**
+     * Returns the number of connect-4s that player #id has.
+     *  
+     * @param board current connect 4 board
+     * @param id integer identifier for the player (can get opponent's id via 3-id);
+     */
     
- // Return the number of connect-4s that player #id has.
+
     public int calcScore(Connect4Board board, int id)
 	{
 		final int rows = board.numRows();

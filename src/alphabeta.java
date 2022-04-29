@@ -1,3 +1,15 @@
+/* *****************************************************************************
+ * Title:            Alphabeta
+ * Files:            alphabeta.java
+ * Semester:         Spring 2022
+ * 
+ * Author:           McClain Martensen moma0500@colorado.edu
+ *                  
+ * Description:		 A Connect-4 player that represents an alpha beta pruning playing strategy.
+ * 
+ * Written:       	 4/28/2022
+ **************************************************************************** */
+
 
 public class alphabeta implements Player {
 
@@ -42,6 +54,7 @@ public class alphabeta implements Player {
      * @param arb handles communication between game and player
      * @throws TimeUpException If the game determines the player has run out of time
      */
+    
     public void calcMove(Connect4Board board, int oppMoveCol, Arbitrator arb) 
     
     
@@ -101,6 +114,23 @@ public class alphabeta implements Player {
 
     	
     }
+    
+    
+    
+    /**
+     *Uses alpha-beta pruning strategy to look multiple steps ahead like minimax, but avoids 
+     *searching unnecessary nodes. Determines what move to make by first doing a 1-depth search 
+     *(equivalent to the GreedyPlayer), then looking two moves in the future, then looking 3 
+     *moves in the future, etc. while there is still time to calculate a move.
+     *  
+     * @param board current connect 4 board
+     * @param depth represents how many steps in the tree we can look forward into
+     * @param isMaximizing calculates maximum possible score
+     * @param alpha is the best already explored option along path to the root for maximizer
+     * @param beta is the best already explored option along path to the root for minimizer
+     * @param arb handles communication between game and player
+     * @throws TimeUpException If the game determines the player has run out of time
+     */
     
     public int alphabeta(Connect4Board board, int depth, int alpha, int beta, boolean isMaximizing, Arbitrator arb) {
   	
@@ -197,7 +227,13 @@ public class alphabeta implements Player {
 
     
     
- // Return the number of connect-4s that player #id has.
+    /**
+     * Returns the number of connect-4s that player #id has.
+     *  
+     * @param board current connect 4 board
+     * @param id integer identifier for the player (can get opponent's id via 3-id);
+     */
+    
     public int calcScore(Connect4Board board, int id)
 	{
 		final int rows = board.numRows();
