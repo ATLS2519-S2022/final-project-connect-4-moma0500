@@ -1,10 +1,10 @@
 
-public class MinimaxPlayer implements Player {
-
+public class alphabeta implements Player {
 
 	int id;
 	int cols;
 	int opponent_id;
+	int alpha, beta;
 	
 	/**
      * Return the name of this player.
@@ -12,7 +12,8 @@ public class MinimaxPlayer implements Player {
      * @return A name for this player
      */
    public String name() {
-    	return "Minnesota";
+	   
+    	return "Alfalfa";
     }
   
     /**
@@ -113,46 +114,68 @@ public class MinimaxPlayer implements Player {
     
     //extra credit -> make another method that calculates a heuristic score
     
+    
+//    function alphabeta(node, depth, α, β, maximizingPlayer):
+//  
+//    if depth = 0 or node is a terminal node then
+//    		return the heuristic value of node
+//    	if maximizingPlayer then
+//    		value = −∞
+	//    	for each child of node do
+		//    	value = max(value, alphabeta(child, depth − 1, α, β, FALSE))
+		//    	α = max(α, value)
+		//    	if α ≥ β then
+			//    	break /* β cut-off */
+	//    	return value
+//    	else
+	//    	value = +∞
+	//    	for each child of node do
+	//    		value = min(value, alphabeta(child, depth − 1, α, β, TRUE))
+	//    		β = min(β, value)
+	//   	 	if α ≥ β then
+	//   		 	break /* α cut-off */
+	//    	return value
 
-    public int minimax(Connect4Board board, int depth, boolean isMaximizing, Arbitrator arb) {
+    public int alphabeta(Connect4Board board, int depth, boolean isMaximizing, Arbitrator arb) {
     	
-    	int bestScore;
+      	int bestScore; //stores highest value
     	
     	if(depth == 0 || board.isFull() || arb.isTimeUp()) {
     		return calcScore(board, id) - calcScore(board, opponent_id);
     	}
     	
     	if(isMaximizing) {
-    		
     		bestScore = -1000;
-    		
     		for (int i = 0 ; i < cols ; i++) {
     			
     			if (board.isValidMove(i)) {
-    				
-	    			board.move(i, id);
-	    			bestScore = Math.max(bestScore, minimax(board, depth - 1, false, arb));
-	    			board.unmove(i, id);
-	    			
+    			
+    			board.move(i, id);
+    			bestScore = Math.max(bestScore, alphabeta(board, depth - 1, alpha, beta, false));
+    			alpha = Math.max(alpha, bestScore);
+    			
+    			if (alpha > beta) {
+    				break;	
+    			}
+    			
+    			board.unmove(i, id);
+    			
     			}
     		}
+    		
     		 return bestScore;
     	}
     		
     	else {
-    		
     		bestScore = 1000;
-    		
     		for (int i = 0 ; i < cols ; i++) {
-    			
     			if (board.isValidMove(i)) {
-    				
-	    			board.move(i, opponent_id);
-	    			bestScore = Math.min(bestScore, minimax(board, depth - 1, true, arb));
-	    			board.unmove(i, opponent_id);
+    			board.move(i, opponent_id);
+    			bestScore = Math.min(bestScore, minimax(board, depth - 1, true, arb));
+    			board.unmove(i, opponent_id);
     			
     			}
-    		}
+    			}
     			
     			return bestScore;
     			
@@ -230,9 +253,5 @@ public class MinimaxPlayer implements Player {
 		}
 		return score;
 	}
-
-    
-    
+	
 }
-
-
